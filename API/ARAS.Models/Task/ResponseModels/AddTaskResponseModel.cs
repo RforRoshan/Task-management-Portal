@@ -1,0 +1,32 @@
+﻿
+
+
+using ARAS.Domain.Models.Task;
+
+namespace ARAS.Models.Task.ResponseModels
+{
+    public class AddTaskResponseModel
+    {
+        public long UserId { get; set; }
+        public string UserName { get; set; }
+        public Guid TaskUniqueId { get; set; }
+        public int TaskSeq { get; set; }
+        public string Catagory { get; set; }
+        public string TaskName { get; set; }
+        public string SubProject { get; set; }
+        public string Network { get; set; }
+        public string Status { get; set; }
+        public decimal TotalETA { get; set; }
+        public decimal UsedETA { get; set; }
+        public decimal OtherUsedETA { get; set; }
+        public bool LastDayWork { get; set; } = false;
+        public bool TodayDayWork { get; set; }
+        public bool ItemToDiscuss { get; set; }
+        public string EHrsToday { get; set; }
+        public List<EHrsLastDTO> EHrsLast { get; set; } = [];
+        public string MyComments { get; set; }
+        public string ManagerComments { get; set; }
+        public string Jira { get; set; }
+        public bool IsApprove { get; set; } = false;
+    }
+}

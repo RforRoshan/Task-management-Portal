@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ARAS.Domain.Models\ARAS.Domain.Models.csproj" />
+    <ProjectReference Include="..\ARAS.Infrastructure\ARAS.Infrastructure.csproj" />
+    <ProjectReference Include="..\ARAS.Models\ARAS.Models.csproj" />
+  </ItemGroup>
+
+</Project>
