@@ -25,7 +25,7 @@ The Task Management Panel helps teams:
 
 | Dashboard | Example Sub Projects |
 |----------|----------------------|
-| CPP      | cpp, ppg, transcard  |
+| CPP      | configurable  |
 | CCP      | configurable         |
 | PLAT     | configurable         |
 
