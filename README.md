@@ -96,6 +96,3 @@ Email    : admin
 Password : Admin@124421  
 
 ---
-
-
-Internal company use only.
