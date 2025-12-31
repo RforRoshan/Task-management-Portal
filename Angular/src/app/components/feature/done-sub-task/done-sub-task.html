@@ -1,0 +1,572 @@
+@if(!isFullyLoaded){ <div class="spin-the-circle">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+@else {
+
+
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold">
+
+    <div class="mx-4 mycolour fw-bold">
+        Done Task
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpen ? 'bi-chevron-up' : 'bi-chevron-down'" (click)="isOpen = !isOpen"
+        style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpen) {
+<div class="justify-content-between align-items-center p-2 border border-top-0">
+
+    <div class="d-flex align-items-center flex-wrap mt-3">
+
+
+        <div class="d-flex align-items-center ps-4 fw-bold fs-5 me-2 min-width-8">
+            <span class="me-2">Seq. No.</span> <span class="mybackground badge fs-6 ">{{ taskSeq }}</span>
+        </div>
+
+
+        <div class="d-flex align-items-center ps-4 fw-bold fs-5 me-2">
+            Task Name:
+        </div>
+
+        <div class="d-flex align-items-center">
+            <div class="me-2 text-start mybackground badge fs-5 task-name-in-subtask">{{ taskName }}</div>
+        </div>
+
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-5">
+
+        <div class="d-flex align-items-center ps-4 col">
+            <span class="me-2">
+                <span class="fw-bold">Category: </span>
+                <span class="badge fs-6" [ngClass]="classColorMap[catagory.charAt(0)] || 'bg-secondary'">
+                    {{ catagory }}
+                </span>
+            </span>
+        </div>
+
+        <div class="d-flex align-items-center ps-4 col">
+            <span class="me-2">
+                <span class="fw-bold">Project: </span>
+                <span>{{ subProject }}</span>
+            </span>
+        </div>
+
+        <div class="d-flex align-items-center ps-4 col">
+            <span class="me-2">
+                <span class="fw-bold">Network: </span>
+                <!-- <span class="badge fs-6" [ngStyle]="{'background-color': colorMap[network.charAt(0)] || '#4CAF50'}">{{
+                    network }}
+                </span> -->
+                {{ network }}
+            </span>
+        </div>
+
+        <div class="d-flex align-items-center ps-4 col">
+            <span class="me-2">
+                <span class="fw-bold">Status: </span>
+                <span class="badge fs-6"
+                    [ngStyle]="{'background-color': statusColorMap[status.charAt(0)] || '#4CAF50'}">
+                    {{status }}
+                </span>
+            </span>
+        </div>
+
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-3">
+
+
+        <div class="d-flex align-items-center ps-4 col-3 gap-2">
+
+            <div class="fw-bold">Resource: </div>
+
+            <div class="d-flex align-items-center gap-1">
+                <div class="letter-avatar mybackground">
+                    {{ (firstName.charAt(0) + lastName.charAt(0)) | uppercase }}
+                </div>
+                <div class="">
+                    <div>{{ firstName}} {{lastName}}</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="d-flex align-items-center  ps-4 col-3">
+            <span class="me-2">
+                <span class="fw-bold">Jira: </span>
+
+                @if(jira !== 'N.A.' && jira !== ''){
+                <span class="badge fs-6 my-cursor-pointer" (click)="openJiraInNewTab(jira)"
+                    [ngStyle]="{'background-color': jiraColorMap[jira.substring(0, 3).toUpperCase()] || '#A7C7E7'}">
+                    {{ jira }}
+                </span>
+                }
+                @else {
+                <span class="badge fs-6" [ngStyle]="{'background-color': '#A7C7E7'}">
+                    {{ jira }}
+                </span>
+                }
+
+            </span>
+
+
+
+        </div>
+
+        <div class="d-flex align-items-center px-4 col-6">
+            <span class="me-2 d-flex align-items-center">
+                <span class="fw-bold">Comments: </span>
+                <span class="display-text-area-data ps-2">{{
+                    myComments
+                    }}</span>
+            </span>
+        </div>
+
+
+    </div>
+
+
+    <div class="d-flex align-items-center flex-wrap mt-3">
+
+
+        <div class="d-flex align-items-center px-4 col-9">
+            <span class="fw-bold">Manager Comments: </span>
+            <span class="display-text-area-data ps-2">{{ managerComments }}</span>
+        </div>
+
+
+    </div>
+
+
+
+    <div class="d-flex align-items-center flex-wrap mt-5">
+
+        <div class="px-4 mycolour fw-bold">
+            Below is for RN / Feature List Details
+        </div>
+
+
+    </div>
+    <div class="d-flex align-items-center flex-wrap mt-3 ">
+
+        <div class="d-flex align-items-center px-4 col-3">
+            <span class="fw-bold">RN: </span>
+            <span class="mx-2 ps-2 badge fs-7 my-cursor-pointer" (click)="goToRNDetails(rnGuidId)"
+                [ngStyle]="{'background-color': '#20C997'}">{{ rnName }}</span>
+        </div>
+
+        <div class="d-flex align-items-center px-4 col-3">
+            <span class="fw-bold">Fix version: </span>
+            <span class="ps-2">{{ fixVersion }}</span>
+        </div>
+        <div class="d-flex align-items-center px-4 col-6">
+            <span class="fw-bold text-nowrap">RN Feature Name: </span>
+            <span class="display-text-area-data ps-2">{{ featureName }}</span>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-3 mb-2">
+
+        <div class="d-flex align-items-center px-4 col-6">
+            <span class="fw-bold text-nowrap">RN Comments: </span>
+            <span class="display-text-area-data ps-2">{{ rnComments }}</span>
+        </div>
+    </div>
+
+
+
+</div>
+}
+
+<div class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-bottom bg-light">
+
+    <div class="d-flex align-items-center flex-wrap gap-2">
+
+        <div class="d-flex align-items-center ps-3 mx-2">
+            <span class="me-2">
+                <span class="fw-bold">ETA Approval: </span>
+                @if(isApprove){
+
+                <span class="badge fs-6 bg-success">Approved</span>
+                }
+                @else {
+                <span class="badge fs-6 bg-danger"> Waiting </span>
+                }
+
+            </span>
+
+        </div>
+
+        <div class="d-flex align-items-center ps-3 border-start">
+            <span class="me-2">
+                <span class="fw-bold">ETA: </span>
+                <span class="badge fs-6" style="background-color: #009688;">
+                    {{ totalETA | displayHrs:true}}
+                </span>
+
+            </span>
+
+        </div>
+        <div class="d-flex align-items-center ps-3 border-start">
+            <span class="me-2">
+                <span class="fw-bold">Used ETA: </span>
+                <span class="badge fs-6" style="background-color: #2196F3;">{{ usedETA | displayHrs:true }}</span>
+
+            </span>
+
+        </div>
+        <div class="d-flex align-items-center ps-3 border-start">
+            <span class="me-2">
+                <span class="fw-bold"> Left ETA: </span>
+                <span class="badge fs-6 bg-danger">{{ totalETA | leftETA:usedETA}}</span></span>
+        </div>
+        @if(otherUsedETA !== 0){
+        <div class="d-flex align-items-center ps-3 border-start">
+            <span class="me-2">
+                <span class="fw-bold"> Other person contribution: </span>
+                <span class="badge fs-6 bg-warning">{{ otherUsedETA | displayHrs:true}}</span></span>
+        </div>
+        <div class="d-flex flex-column align-items-center border-start">
+
+            @for (otherUsedHrs of otherTotalUsedHrs; track $index) {
+            <div class="badge fs-7 m-1"
+                [ngStyle]="{'background-color': colorMap[otherUsedHrs.firstName.toUpperCase().charAt(0)] || '#4CAF50'}">
+                {{ otherUsedHrs.firstName}}-{{otherUsedHrs.worksHrs}}
+            </div>
+
+            }
+
+        </div>
+        }
+
+    </div>
+
+</div>
+
+<!-- =======================================Sub Task============================================= -->
+
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mt-2">
+    <div class="me-3 text-center min-width-8 mycolour">
+        Sub Tasks
+    </div>
+    <i class="bi mycolour" [ngClass]="isOpenSelfSubTasks ? 'bi-chevron-up' : 'bi-chevron-down'"
+        (click)="isOpenSelfSubTasks = !isOpenSelfSubTasks" style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpenSelfSubTasks) {
+<div class="container-fluid m-0 p-0 small">
+    <div class="">
+        <table class="table table-bordered-my table-hover">
+            <thead class="sticky-top">
+                <tr class="text-nowrap text-center align-middle custom-table-header-clr">
+                    <th>S.No.</th>
+                    <th class="sticky-sub-task-name">SubTask Name</th>
+                    <th>Remark</th>
+                    <th>ETA</th>
+                    <th>Status</th>
+                    <th><span>SubTask</span><br><span>ETA</span><br><span>Approval</span></th>
+                    <th>Time Log</th>
+
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+
+                @for (subTask of subTasks; track $index) {
+                <tr class="align-middle text-center">
+                    <td>{{ subTask.subTaskSeq }}</td>
+                    <td class="display-text-area-data sticky-sub-task-name">{{ subTask.subTaskName }}</td>
+                    <td class="display-text-area-data min-width-8 max-width-12">{{ subTask.remark }}</td>
+                    <td>{{ subTask.subTaskETA | displayHrs }}</td>
+                    <td class="text-nowrap">
+                        <span class="badge fs-7 fw-bold"
+                            [ngStyle]="{'background-color': statusColorMap[subTask.status.charAt(0)] || '#4CAF50'}">{{
+                            subTask.status }}</span>
+
+                    </td>
+
+
+                    <td>
+                        @if(!isApprove){
+                        <span class="badge fs-7 bg-danger">Pending</span>
+                        }
+                        @else {
+                        @if(subTask.isApprove){
+                        <span class="badge fs-7 bg-success">Approved</span>
+                        }
+                        @else{
+                        <span class="badge fs-7 bg-danger">Pending</span>
+                        }
+                        }
+
+                    </td>
+                    <td>
+
+                        <div class="align-items-center justify-content-center mt-2 ">
+                            @for (workEntry of subTask.workEntrys; track $index) {
+
+                            <div class="work-entry-edit-td">
+                                <span class="">{{workEntry.entryDate}}</span>—<strong>
+
+                                    <span class="badge "
+                                        style="color: black; background-color: azure; font-size: 0.9rem">{{workEntry.entryHrs
+                                        | displayHrs}}</span>
+
+                                </strong>
+                            </div>
+                            }
+
+
+                        </div>
+
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom">
+        <div>Showing {{ subTasks.length }} SubTasks</div>
+        <div class="flex-grow-1 d-flex justify-content-center gap-2">
+            <button class="custom-btn" (click)="exportToExcel()">Export To Excel</button>
+        </div>
+    </div>
+</div>
+
+}
+
+
+<!-- ================================================================================ -->
+
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mt-2">
+    <div class="px-5 text-center mycolour">
+        Other Resource Sub Tasks (Contribution of other resources)
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpenOtherSubTasks ? 'bi-chevron-up' : 'bi-chevron-down'"
+        (click)="isOpenOtherSubTasks = !isOpenOtherSubTasks"
+        style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpenOtherSubTasks) {
+<div class="container-fluid m-0 p-0 small">
+    <div class="">
+        <table class="table table-bordered-my table-hover">
+            <thead class="sticky-top">
+                <tr class="text-nowrap text-center align-middle custom-table-header-clr">
+                    <th>S.No.</th>
+                    <th class="sticky-sub-task-name">SubTask Name</th>
+                    <th>Remark</th>
+                    <th>Status</th>
+                    <th>Resource</th>
+                    <th>Time Log</th>
+
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+
+                @for (otherSubTask of otherSubTasks; track $index) {
+                <tr class="align-middle text-center">
+
+                    <td>{{ otherSubTask.subTaskSeq }}</td>
+                    <td class="display-text-area-data sticky-sub-task-name">{{ otherSubTask.subTaskName }}</td>
+                    <td class="display-text-area-data min-width-8 max-width-12">{{ otherSubTask.remark }}</td>
+                    <td class="text-nowrap">
+                        <span class="badge fs-7 fw-bold"
+                            [ngStyle]="{'background-color': statusColorMap[otherSubTask.status.charAt(0)] || '#4CAF50'}">{{
+                            otherSubTask.status }}</span>
+
+                    </td>
+                    <td>
+                        @if(otherSubTask.workEntrys.length > 0){
+                        <span class="badge fs-7 m-1 fw-bold"
+                            [ngStyle]="{'background-color': colorMap[otherSubTask.workEntrys[0].firstName.toUpperCase().charAt(0)] || '#4CAF50'}">{{otherSubTask.workEntrys[0].firstName}}
+                        </span>
+                        }
+
+                    </td>
+
+                    <td>
+
+
+
+                        @for (workEntry of otherSubTask.workEntrys; track $index) {
+
+                        <div class="work-entry-edit-td">
+                            <span class="">{{workEntry.entryDate}}</span>—
+
+                            <span class="badge fw-bold"
+                                style="color: black; background-color: azure; font-size: 0.9rem">{{workEntry.entryHrs
+                                | displayHrs}}</span>
+                        </div>
+                        }
+
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+    <div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom">
+        <div>Showing {{ otherSubTasks.length }} Other sub tasks contribution</div>
+    </div>
+</div>
+
+
+}
+
+<!-- ============================Sub Task END==================================================== -->
+
+
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mt-5">
+
+    <div class="d-flex align-items-center w-100">
+        <div class="me-3 text-center min-width-8 mycolour">
+            Comments
+        </div>
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpenComments ? 'bi-chevron-up' : 'bi-chevron-down'"
+        (click)="isOpenComments = !isOpenComments" style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpenComments) {
+<div class="bordered-box container-fluid m-0 p-2 small">
+
+
+    @for (taskComment of taskCommentsList; track $index) {
+
+    <div class="border p-2 mb-2 rounded bg-light">
+
+        <div class="d-flex align-items-center gap-2">
+            <div class="letter-avatar"
+                [ngStyle]="{'background-color': colorMap[taskComment.firstName.charAt(0)] || '#4CAF50'}">
+                {{ (taskComment.firstName.charAt(0) + taskComment.lastName.charAt(0)) | uppercase }}
+            </div>
+            <div class="pt-3">
+                <div class="fw-bold">{{ taskComment.firstName}} {{taskComment.lastName}}</div>
+                <div class="d-flex align-items-center gap-2 mb-3">
+
+                    <div>{{ taskComment.commentedOn | date: 'MMMM d, y, h:mm a' }}</div>
+                    @if(taskComment.isPreviouslyEdited){
+                    <div>(edited on {{taskComment.commentEditedOn | date: 'MMMM d, y, h:mm a' }})</div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="ps-5">
+            <div [innerHTML]="taskComment.comment"
+                style="word-wrap: break-word; overflow-wrap: break-word; white-space: normal;"></div>
+        </div>
+
+    </div>
+
+    }
+
+
+
+
+</div>
+<div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom">
+    <div class="d-flex align-items-center w-100">
+        <div class="m-3 text-center min-width-8 mycolour">
+
+        </div>
+    </div>
+</div>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mt-5">
+
+    <div class="d-flex align-items-center w-100">
+        <div class="me-3 text-center min-width-8 mycolour">
+            History
+        </div>
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpenLogBox ? 'bi-chevron-up' : 'bi-chevron-down'" (click)="callLogData()"
+        style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpenLogBox) {
+
+<div class="container-fluid m-0 p-0 small">
+    <div class="custom-table-responsive">
+        <table class="table table-bordered-my table-hover">
+            <thead class="sticky-top">
+                <tr class="text-nowrap text-center align-middle custom-table-header-clr">
+                    <th class="mycolour">S.No.</th>
+                    <th class="min-max-width-28 mycolour">Add / Changes Details</th>
+                    <th class="mycolour"> By</th>
+                    <th class="mycolour"> Date Time</th>
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+
+                @for (tasksLog of tasksLogs; track $index) {
+                <tr class="align-middle text-center">
+
+                    <td>{{ $index + 1}}</td>
+                    <td class="display-text-area-data min-max-width-28">{{ tasksLog.log }}</td>
+                    <td class="align-middle text-center">
+
+                        <div class="d-flex align-items-center gap-1 justify-content-center">
+                            <div class="letter-avatar"
+                                [ngStyle]="{'background-color': colorMap[tasksLog.firstName.charAt(0)] || '#4CAF50'}">
+                                {{ (tasksLog.firstName.charAt(0) + tasksLog.lastName.charAt(0)) | uppercase }}
+                            </div>
+                            <div class="">
+                                <div>{{ tasksLog.firstName}}</div>
+                            </div>
+                        </div>
+
+
+                    </td>
+                    <td class="text-nowrap">{{ tasksLog.date }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom">
+        <div>Showing {{ tasksLogs.length }} entries</div>
+    </div>
+</div>
+}
+
+}

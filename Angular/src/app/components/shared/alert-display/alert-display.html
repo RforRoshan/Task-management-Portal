@@ -1,0 +1,31 @@
+<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header text-white mybackground">
+                <h5 class="modal-title">
+                    <i class="bi {{ icon }} me-2"></i>{{ title }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" (click)="onClose()"></button>
+            </div>
+
+            <div class="modal-body">
+                <p [ngClass]="{ 'text-danger fw-bold': title === 'Error!' }">
+                    {{ message }}
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                @if (isConfirm) {
+                <button class="btn btn-outline-secondary" (click)="onCancel()">
+                    {{ cancelText }}
+                </button>
+                <button class="btn btn-danger" (click)="onConfirm()">
+                    {{ confirmText }}
+                </button>
+                } @else {
+                <button class="custom-btn" (click)="onClose()">OK</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

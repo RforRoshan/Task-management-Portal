@@ -1,0 +1,25 @@
+.work-entry-edit-td {
+  .work-entry-edit-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    border: none;
+  }
+
+  &:hover {
+    .work-entry-edit-btn {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+.sticky-sub-task-name {
+
+  min-width: 15vw;
+  max-width: 15vw;
+
+}
+.bordered-box {
+    border: 1px solid #dee2e6;
+}

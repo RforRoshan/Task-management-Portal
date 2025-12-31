@@ -1,0 +1,371 @@
+@if(isLoading){ <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+
+@if(!isFullyLoaded){ <div class="spin-the-circle">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+@else {
+
+
+<div class="container-fluid mt-4 py-1 mt-auto small">
+    <div class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top">
+        <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <div class="text-nowrap fw-bold mycolour">Display Date:</div>
+                <input class="custom-input" type="date" [(ngModel)]="displayDate"
+                    (ngModelChange)="getTaskData($event)" />
+            </div>
+        </div>
+
+        <div class="start-50 fw-bold table-heading text-nowrap">
+            {{ projectname | uppercase }} Current Tasks List
+        </div>
+
+        <div class="form-group">
+            <input type="text" [(ngModel)]="searchTerm" placeholder="Search..."
+                class="form-control custom-input-colour">
+        </div>
+    </div>
+
+    <div class="custom-table-responsive">
+        <table class="table table-bordered-my table-hover">
+            <thead class="sticky-top">
+                <tr class="text-nowrap text-center align-middle custom-table-header-clr">
+                    <th><span>Seq.</span><br><span>No.</span></th>
+                    <th>Category</th>
+                    <th class="task-name-show">Task Name</th>
+                    <th>Resource</th>
+                    <th>Project</th>
+                    <th>Network</th>
+                    <th>Status</th>
+                    <th><span>ETA</span><br><span>Approval</span></th>
+                    <th>ETA</th>
+                    <th><span>Used</span><br><span>ETA</span></th>
+                    <th><span>Other</span><br><span>Spend</span><br><span>Hrs</span></th>
+                    <th class="action-btn-sticky">Action</th>
+                    <th (click)="lastDayWorkFilter = !lastDayWorkFilter" class="cursor-pointer">
+                        <span>Last Day</span><br><span>Work</span>
+                        <i class="mycolour"
+                            [ngClass]="{ 'bi bi-funnel-fill': lastDayWorkFilter, 'bi bi-funnel': !lastDayWorkFilter}"></i>
+                    </th>
+                    <th (click)="itemToDiscussFilter = !itemToDiscussFilter" class="cursor-pointer">
+                        <span>Item To</span><br><span>Discuss</span>
+                        <i class="mycolour"
+                            [ngClass]="{ 'bi bi-funnel-fill': itemToDiscussFilter, 'bi bi-funnel': !itemToDiscussFilter}"></i>
+                    </th>
+                    <th (click)="todayDayWorkFilter = !todayDayWorkFilter" class="cursor-pointer">
+                        <span>Today</span><br><span>Work</span>
+                        <i class="mycolour"
+                            [ngClass]="{ 'bi bi-funnel-fill': todayDayWorkFilter, 'bi bi-funnel': !todayDayWorkFilter}"></i>
+                    </th>
+                    <th class="px-3"><span>Estimated Hrs</span><br><span>for Today</span></th>
+                    <th class="px-5"> <span>Last Day</span><br><span>Hrs Used</span></th>
+                    <th class="px-5"><span>Manager</span><br><span>Comments</span></th>
+                    <th class="px-5">Comments</th>
+                    <th>Jira</th>
+                    <th>RN</th>
+                    <th><span>Fix</span><br><span>Version</span></th>
+                    <th><span>Mail</span><br><span>Titled</span></th>
+                    <th>Move</th>
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+
+                @for (task of filteredTasks; track $index) {
+                <tr class="align-middle text-center">
+                    <td>{{ task.taskSeq }}</td>
+
+
+                    <td>
+                        <span class="badge fs-7" [ngClass]="classColorMap[task.catagory.charAt(0)] || 'bg-secondary'">{{
+                            task.catagory }}</span>
+                    </td>
+                    <td class="task-name-show">
+                        {{ task.taskName }}
+
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center gap-1 justify-content-left">
+                            <div class="letter-avatar"
+                                [ngStyle]="{'background-color': colorMap[task.userName.toUpperCase().charAt(0)] || '#4CAF50'}">
+                                {{ task.userName.charAt(0) | uppercase }}
+                            </div>
+                            <div class="">
+                                <div>{{ resourceNameMap[task.userName] || 'UnAssigned' }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+
+                        {{ task.subProject }}
+                    </td>
+                    <td>
+                        <!-- <span class="badge fs-7"
+                            [ngStyle]="{'background-color': colorMap[task.network.charAt(0)] || '#4CAF50'}">{{
+                            task.network }}
+                        </span> -->
+                        {{task.network }}
+                    </td>
+                    <td class="text-nowrap"><span class="badge fs-7 fw-bold"
+                            [ngStyle]="{'background-color': statusColorMap[task.status.charAt(0)] || '#4CAF50'}">{{
+                            task.status }}</span>
+                    </td>
+
+                    <td>
+                        @if(task.isApprove){
+
+                        <span class="badge fs-7 d-flex flex-column bg-success">
+
+                            <span class="pb-1">ETA</span>
+                            <span>Approved</span>
+
+                        </span>
+                        }
+                        @else {
+                        <span class="badge fs-7 d-flex flex-column bg-danger">
+
+                            <span class="pb-1">Approval</span>
+                            <span>Pending</span>
+
+                        </span>
+                        }
+                    </td>
+                    <td>{{ task.totalETA | displayHrs }}</td>
+                    <td>{{ task.usedETA | displayHrs }}</td>
+                    <td>{{ task.otherUsedETA | displayHrs }}</td>
+
+                    <td class="action-btn-sticky">
+                        @if(!task.isEditing){
+
+                        <div class="d-flex gap-1">
+                            <button class="custom-btn" (click)="goToTask(task.taskUniqueId)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="custom-btn" (click)="task.isEditing = true">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </div>
+                        }
+                        @else {
+
+                        <button class="custom-btn" (click)="task.isEditing = false; updateTask(task)">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                        }
+                    </td>
+                    <td>{{ task.lastDayWork ? 'Yes' : 'No' }}</td>
+                    @if(!task.isEditing){
+                    <td>{{ task.itemToDiscuss ? 'Yes' : 'No' }}</td>
+                    <td>{{ task.todayDayWork ? 'Yes' : 'No' }}</td>
+                    <td class="display-text-area-data">{{ task.eHrsToday }}</td>
+                    }
+                    @else {
+                    <td>
+                        <select class="form-select form-select-sm custom-input-colour w-auto"
+                            [(ngModel)]="task.itemToDiscuss">
+                            <option [ngValue]="true">Yes</option>
+                            <option [ngValue]="false">No</option>
+                        </select>
+                    </td>
+
+                    @if(isManager){
+                    <td>
+                        <select class="form-select form-select-sm custom-input-colour w-auto"
+                            [(ngModel)]="task.todayDayWork">
+                            <option [ngValue]="true">Yes</option>
+                            <option [ngValue]="false">No</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <textarea class="custom-input-textarea" [(ngModel)]="task.eHrsToday" rows="2"></textarea>
+                    </td>
+
+                    }
+                    @else {
+                    <td>{{ task.todayDayWork ? 'Yes' : 'No' }}</td>
+                    <td class="display-text-area-data">{{ task.eHrsToday }}</td>
+                    }
+
+
+                    }
+
+                    <td>
+                        @for (eHrsLast of task.eHrsLast; track $index) {
+
+
+                        <div class="">
+
+                            {{ eHrsLast.firstName}}-{{eHrsLast.worksHrs}}
+                        </div>
+
+                        }
+
+                    </td>
+
+
+
+
+
+
+                    @if(isManager && task.isEditing){
+                    <td>
+                        <textarea class="custom-input-textarea" [(ngModel)]="task.managerComments" rows="2"></textarea>
+                    </td>
+                    }
+                    @else {
+                    <td class="display-text-area-data min-max-width-15">{{ task.managerComments }}</td>
+                    }
+
+                    <td class="display-text-area-data min-max-width-15">{{ task.myComments }}</td>
+                    <td class="text-nowrap">
+
+                        @if(task.jira !== 'N.A.' && task.jira !== ''){
+                        <span class="badge fs-7 my-cursor-pointer" (click)="openJiraInNewTab(task.jira)"
+                            [ngStyle]="{'background-color': jiraColorMap[task.jira.substring(0, 3).toUpperCase()] || '#4CAF50'}">
+                            {{ task.jira }}
+                        </span>
+
+                        }
+
+                    </td>
+                    <td class="text-nowrap">
+                        @if(task.rnGuidId !== "00000000-0000-0000-0000-000000000000"){
+                        <span class="badge fs-7 my-cursor-pointer" (click)="goToRNDetails(task.rnGuidId)"
+                            [ngStyle]="{'background-color': numberColorMap[$index + 1] || '#A7C7E7'}"> {{
+                            rNAndFeatureListMap[task.rnGuidId] || '' }} </span>
+                        }
+                    </td>
+                    <td>{{ task.fixVersion }}</td>
+                    <td class="display-text-area-data min-max-width-15">{{ task.mailTitled }}</td>
+                    <td>
+                        @if(!task.isEditing){
+                        <div class="text-nowrap min-max-width-7">
+                            <button class="custom-btn" (click)="moveTaskButton(task.taskUniqueId)">Move to done</button>
+                        </div>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div
+        class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom border border-top-1">
+
+        <div class="flex-grow-1 d-flex justify-content-center gap-2">
+            <button class="custom-btn" (click)="addTask()">Add New Task</button>
+            <button class="custom-btn" (click)="exportToExcel()">Export To Excel</button>
+        </div>
+        <div>Total <strong>{{ filteredTasks.length }}</strong> Current Task</div>
+    </div>
+
+
+</div>
+
+
+<div
+    class="min-max-width-700 container-fluid mt-4 py-1 mt-auto small mt-2 d-flex align-items-center justify-content-between">
+    <div class="">
+        <div
+            class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mx-auto">
+            <div class="d-flex align-items-center w-100">
+                <div class="me-3 text-center mycolour flex-grow-1">
+                    Advance Options
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid m-0 p-0 small min-max-width-700 my-border pb-2">
+            <div class="fw-bold px-2 pt-2 mycolour">
+                Manager Options
+            </div>
+            <div class="d-flex align-items-center gap-2 p-2">
+                <button class="custom-btn"
+                    [disabled]="filterUserNameValue == '' && filterStatusValue == ''  && filterNetworkValue == '' && filterCategoryValue == '' && !lastDayWorkFilter && !itemToDiscussFilter && !todayDayWorkFilter"
+                    (click)="clearAllFilter()">Clear
+                    All Filter</button>
+
+                <button class="custom-btn" [ngClass]="{'custom-btn-active': lastDayWorkFilter && itemToDiscussFilter}"
+                    (click)="managerFilter() ">Manager Filter</button>
+            </div>
+
+        </div>
+        <div class="container-fluid m-0 p-0 small min-max-width-700 my-border pb-2">
+            <div class="fw-bold px-2 pt-2 mycolour">
+                Status Filter
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2 p-2">
+
+                <button class="custom-btn" (click)="filterStatusValue = ''" [disabled]="filterStatusValue == ''">Clear
+                    Status Filter</button>
+                @for(distinctStatus of distinctStatuses; track distinctStatus){
+                <button class="custom-btn" [ngClass]="{'custom-btn-active': distinctStatus === filterStatusValue}"
+                    (click)="statusFilter(distinctStatus)">{{distinctStatus}}</button>
+                }
+
+            </div>
+
+        </div>
+        <div class="container-fluid m-0 p-0 small min-max-width-700 my-border pb-2">
+            <div class="fw-bold px-2 pt-2 mycolour">
+                Resource Filter
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2 p-2">
+                <button class="custom-btn" (click)="filterUserNameValue = ''"
+                    [disabled]="filterUserNameValue == ''">Clear
+                    Resource Filter</button>
+                @for(distinctUserName of distinctUserNames; track distinctUserName){
+                <button class="custom-btn" [ngClass]="{'custom-btn-active': distinctUserName === filterUserNameValue}"
+                    (click)="usernameFilter(distinctUserName)">{{resourceNameMap[distinctUserName] ||
+                    distinctUserName}}</button>
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="container-fluid m-0 p-0 small min-max-width-700 my-border pb-2">
+            <div class="fw-bold px-2 pt-2 mycolour">
+                Network Filter
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2 p-2">
+                <button class="custom-btn" (click)="filterNetworkValue = ''" [disabled]="filterNetworkValue == ''">Clear
+                    Network Filter</button>
+                @for(networkName of distinctNetworkNames; track networkName){
+                <button class="custom-btn" [ngClass]="{'custom-btn-active': networkName === filterNetworkValue}"
+                    (click)="networkNameFilter(networkName)">{{networkName}}</button>
+                }
+
+            </div>
+
+        </div>
+
+        <div class="container-fluid m-0 p-0 small min-max-width-700 my-border pb-2">
+            <div class="fw-bold px-2 pt-2 mycolour">
+                Category Filter
+            </div>
+            <div class="d-flex align-items-center gap-2 p-2">
+                <button class="custom-btn" (click)="filterCategoryValue = ''"
+                    [disabled]="filterCategoryValue == ''">Clear
+                    Category Filter</button>
+                @for(categoryName of distinctCategoryNames; track categoryName){
+                <button class="custom-btn" [ngClass]="{'custom-btn-active': categoryName === filterCategoryValue}"
+                    (click)="categoryFilter(categoryName)">{{categoryName}}</button>
+                }
+
+            </div>
+
+        </div>
+
+        <div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom mx-auto">
+            <div class="flex-grow-1 d-flex justify-content-center">
+                ..
+            </div>
+        </div>
+
+    </div>
+</div>
+}

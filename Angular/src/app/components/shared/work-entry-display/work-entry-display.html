@@ -1,0 +1,20 @@
+<div class="modal fade show overlay">
+    <div class="alert-box">
+        <h2>Work Entry</h2>
+
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input class="custom-input" id="date" type="date" [(ngModel)]="enterDate" />
+        </div>
+
+        <div class="form-group">
+            <label for="hrs">Hours:</label>
+            <input class="custom-input" id="hrs" type="number" min="0" step="0.5" [(ngModel)]="enterHrs" />
+        </div>
+
+        <div class="actions">
+            <button type="button" class="custom-btn" (click)="onCancel()">Cancel</button>
+            <button type="button" class="custom-btn" (click)="onSubmit()">Submit</button>
+        </div>
+    </div>
+</div>

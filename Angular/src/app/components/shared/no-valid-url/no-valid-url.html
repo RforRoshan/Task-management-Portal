@@ -1,0 +1,12 @@
+<div class="not-found-container d-flex flex-column align-items-center justify-content-center text-center">
+    <h1 class="fw-bold mb-2">404 — Not a Valid URL</h1>
+    <p class="text-secondary mb-3">Looks like you took a wrong turn into the void 🌌</p>
+
+    <canvas #gameCanvas width="400" height="400" class="game-canvas mb-4"></canvas>
+
+    <div class="d-flex gap-3">
+        <button class="custom-btn" (click)="goBack()">Go back</button>
+        <button class="btn btn-outline-secondary" (click)="restartGame()">Restart Game</button>
+        <button class="custom-btn" (click)="goHome()">Go Home</button>
+    </div>
+</div>

@@ -1,0 +1,114 @@
+@if(isLoading){ <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+
+@if(!isFullyLoaded){ <div class="spin-the-circle">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+@else {
+<div class="d-flex mb-0 p-2 rounded-top custom-heading-done align-items-center">
+
+    <div class="px-5 fw-bold table-heading">
+        {{ projectname | uppercase }} Done Tasks List (Total {{ doneTasks.length }})
+    </div>
+
+    <div class="form-group col-6">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Search..." class="form-control custom-input-colour">
+    </div>
+    <div class="px-1">
+        <button class="custom-btn" (click)="exportToExcel()">Export To Excel</button>
+    </div>
+</div>
+<div class="container-fluid mt-4 py-1 mt-auto small">
+    <table class="table table-bordered-my table-hover">
+        <thead class="sticky-top">
+            <tr class="text-nowrap text-center align-middle custom-table-header-clr-done">
+                <th><span>Seq.</span><br><span>No.</span></th>
+                <th>Category</th>
+                <th class="task-name-show">Task Name</th>
+                <th>Resource</th>
+                <th>Project</th>
+                <th>Network</th>
+                <th>Status</th>
+                <th class="action-btn-sticky">Action</th>
+                <th>ETA</th>
+                <th><span>Used</span><br><span>ETA</span></th>
+                <th>Jira</th>
+                <th>RN</th>
+                <th><span>Fix</span><br><span>Version</span></th>
+                <th><span>Mail</span><br><span>Titled</span></th>
+                <th class="px-5">Comments</th>
+                <th class="px-5"><span>Manager</span><br><span>Comments</span></th>
+                <th>Move</th>
+            </tr>
+        </thead>
+        <tbody class="text-wrap">
+
+            @for (task of filteredTasks; track $index) {
+            <tr class="align-middle text-center">
+                <td>{{ task.taskSeq }}</td>
+                <td>
+                    <span class="badge fs-7" [ngClass]="classColorMap[task.catagory.charAt(0)] || 'bg-secondary'">{{
+                        task.catagory }}</span>
+                </td>
+                <td class="task-name-show text-start">
+                    {{ task.taskName }}
+                </td>
+                <td>
+                    <div class="d-flex align-items-center gap-1 justify-content-left">
+                        <div class="letter-avatar"
+                            [ngStyle]="{'background-color': colorMap[task.userName.toUpperCase().charAt(0)] || '#4CAF50'}">
+                            {{ task.userName.charAt(0) | uppercase }}
+                        </div>
+                        <div class="">
+                            <div>{{ resourceNameMap[task.userName] || 'UnAssigned' }}</div>
+                        </div>
+                    </div>
+
+
+                </td>
+                <td>{{ task.subProject }}</td>
+
+                <td>
+                    <!-- <span class="badge fs-7"
+                            [ngStyle]="{'background-color': colorMap[task.network.charAt(0)] || '#4CAF50'}">{{
+                            task.network }}
+                        </span> -->
+                    {{ task.network }}
+                </td>
+                <td class="text-nowrap"><span class="badge fs-7 fw-bold"
+                        [ngStyle]="{'background-color': statusColorMap[task.status.charAt(0)] || '#4CAF50'}">{{
+                        task.status }}</span>
+                </td>
+                <td class="action-btn-sticky">
+                    <div class="d-flex gap-1 justify-content-center">
+                        <button class="custom-btn" (click)="goToTask(task.taskUniqueId)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </td>
+                <td>{{ task.totalETA | displayHrs }}</td>
+                <td>{{ task.usedETA | displayHrs }}</td>
+                <td class="text-nowrap">
+                    @if(task.jira !== 'N.A.' && task.jira !== ''){
+                    <span class="badge fs-7 my-cursor-pointer" (click)="openJiraInNewTab(task.jira)"
+                        [ngStyle]="{'background-color': jiraColorMap[task.jira.substring(0, 3).toUpperCase()] || '#4CAF50'}">
+                        {{ task.jira }}
+                    </span>
+                    }
+                </td>
+                <td class="text-nowrap">{{ task.rnName }}</td>
+                <td>{{ task.fixVersion }}</td>
+                <td class="display-text-area-data min-max-width-15">{{ task.mailTitled }}</td>
+                <td class="display-text-area-data min-max-width-15">{{ task.myComments }}</td>
+                <td class="display-text-area-data min-max-width-15">{{ task.managerComments }}</td>
+                <td class="text-nowrap min-max-width-8">
+                    <button class="custom-btn" (click)="moveTaskButton(task.taskUniqueId)">Move to current</button>
+                </td>
+
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+}

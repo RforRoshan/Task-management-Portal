@@ -1,0 +1,88 @@
+<div class="modal fade show overlay">
+    <div class="alert-box">
+
+        <div
+            class="custom-table-header text-center mycolour w-100 justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold">
+            Add New Current Task
+        </div>
+
+
+        <div class="d-flex align-items-center px-4">
+
+            <div class="fw-bold min-width-6">Task Name: </div>
+            <input class="custom-input" placeholder="Enter Task Name" [(ngModel)]="taskName" />
+        </div>
+
+        <div class="d-flex align-items-center px-4">
+
+            <div class="fw-bold min-width-6">Jira: </div>
+            <div>
+                <input class="custom-input min-width-6" [(ngModel)]="jira" />
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center ps-4">
+            <div class="fw-bold min-width-6">Category: </div>
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="catagory">
+                @for (catagoryL of categoryList; track $index) {
+                <option [ngValue]="catagoryL.value">{{ catagoryL.value }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="d-flex align-items-center ps-4">
+            <div class="fw-bold min-width-6">Project: </div>
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="subProject">
+                @for (projectL of projectList; track $index) {
+                <option [ngValue]="projectL.value">{{ projectL.value }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="d-flex align-items-center ps-4">
+            <div class="fw-bold min-width-6">Network: </div>
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="network">
+                @for (networkL of networkList; track $index) {
+                <option [ngValue]="networkL.value">{{ networkL.value }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="d-flex align-items-center ps-4">
+            <div class="fw-bold min-width-6">Status: </div>
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="status">
+                @for (statusL of statusList; track $index) {
+                <option [ngValue]="statusL.value">{{ statusL.value }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="d-flex align-items-center ps-4">
+
+            <div class="fw-bold min-width-6">Resource: </div>
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="userName">
+                @for (resourceName of resourceNamesList; track $index) {
+                <option [ngValue]="resourceName.userName">{{ resourceName.name }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="d-flex align-items-center ps-4">
+            <div class="fw-bold min-width-6">Item To Discuss: </div>
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="itemToDiscuss">
+                <option [ngValue]="true">Yes</option>
+                <option [ngValue]="false">No</option>
+            </select>
+        </div>
+        <div class="align-items-center px-4 fw-bold">My Comment: </div>
+        <div class="align-items-center px-4 fw-bold">
+            <textarea class="custom-input-textarea" [(ngModel)]="myComments" rows="2"></textarea>
+        </div>
+
+        <div class="d-flex gap-4 justify-content-center">
+            <button type="button" class="custom-btn" (click)="onCancel()">Cancel</button>
+            <button type="button" class="custom-btn" (click)="onSubmit()">Submit</button>
+        </div>
+
+    </div>
+</div>

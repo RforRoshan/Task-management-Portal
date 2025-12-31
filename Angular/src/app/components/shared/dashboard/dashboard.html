@@ -1,0 +1,140 @@
+@if(isLoading){ <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+
+<div class="gup-layout d-flex flex-column vh-100">
+    <!-- Header -->
+    <header class="gup-header d-flex align-items-center px-3 py-2 shadow-sm">
+        <div class="gup-logo me-3 mycolour" (click)="goToHome()">ARAS</div>
+        <button class="custom-btn me-3" (click)="toggleSidebar()">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <div class="position-relative me-auto">
+            <input type="text" class="custom-input input-min-width-20" placeholder="Search..."
+                [(ngModel)]="searchNavValue" />
+
+            <!-- Styled Search Results Dropdown -->
+            <div class="dropdown-menu p-3 shadow-sm position-absolute start-50 translate-middle-x"
+                [class.show]="searchNavValue && filternavItems().length > 0"
+                style="min-width: 200px; text-align: center; top: 100%; z-index: 1050;">
+                <div class="d-flex flex-column gap-2">
+                    @for (item of filternavItems(); track $index) {
+                    <a class="custom-btn py-1 px-2 " (click)="goTo(item.route)">
+                        {{ item.label }}
+                    </a>
+                    }
+
+
+                </div>
+                @if (filternavItems().length === 0) {
+                <div class="text-muted mt-2">
+                    No results found
+                </div>
+                }
+            </div>
+        </div>
+
+
+        <div class="dropdown me-3 position-relative" (mouseenter)="themeDropdownOpen = true"
+            (mouseleave)="themeDropdownOpen = false">
+
+            <!-- Trigger Icon Button -->
+            <button class="btn p-1 rounded-circle border-0" [class.show]="themeDropdownOpen"
+                [attr.aria-expanded]="themeDropdownOpen">
+                <i class="bi bi-grid fs-4 mycolour"></i>
+            </button>
+
+            <!-- Dropdown Panel -->
+            <div class="dropdown-menu p-3 shadow-sm position-absolute start-50 translate-middle-x"
+                [class.show]="themeDropdownOpen" style="min-width: 180px; text-align: center; top: 100%;">
+
+                <div class="fw-semibold mb-2">Switch Theme</div>
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    @for (theme of getAllTheme(); track $index) {
+                    <div class="theme-color-box" [ngStyle]="{ 'background-color': theme.primaryColor}"
+                        (click)="switchTheme(theme.name)">
+                        <span class="theme-overlay">{{ theme.name }}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <div class="position-relative d-inline-block" (mouseenter)="manageDropdownOpen = true"
+            (mouseleave)="manageDropdownOpen = false">
+
+            <button class="btn d-flex align-items-center p-1 border-0" [class.show]="manageDropdownOpen"
+                [attr.aria-expanded]="manageDropdownOpen">
+
+                <div class="me-2">
+
+                    <!-- @if (user.userImage) {
+                    <img [src]="user.userImage" alt="user" width="36" height="36"
+                        class="rounded-circle object-fit-cover" />
+                    } @else {
+                    <div class="letter-avatar">
+                        {{ (user.name.charAt(0) + user.surname.charAt(0)) | uppercase }}
+                    </div>
+                    } -->
+                    <div class="letter-avatar mybackground">
+                        {{ (userDetails.firstName.charAt(0) + userDetails.lastName.charAt(0)) | uppercase }}
+                    </div>
+                </div>
+
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-custom px-2" [class.show]="manageDropdownOpen">
+
+                <div class="text-center my-2 custom-colour-only"> <strong>{{ userDetails.firstName + ' ' +
+                        userDetails.lastName }}</strong>
+                </div>
+                <button class="text-center custom-btn col-12 my-2" (click)="goTo(profilePath)">
+                    <i class="bi bi-person-circle me-2"></i>
+                    My Profile
+                </button>
+
+                <button class="text-center custom-btn col-12 mb-2" (click)="logout()">
+                    <i class="bi bi-box-arrow-right me-2"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="d-flex flex-grow-1">
+        <!-- Sidebar -->
+        <aside class="gup-sidebar bg-light border-end" [class.d-none]="!isSidebarVisible">
+            <ul class="nav flex-column p-2">
+                @for (item of navItems; track $index) {
+                <li class="nav-item mb-2">
+                    <a class="w-100 d-block text-start px-3 py-2 custom-btn" [routerLink]="item.route"
+                        routerLinkActive="mydisabled custom-arrow" [routerLinkActiveOptions]="{ exact: true }">
+                        {{ item.label }}
+                    </a>
+                </li>
+                }
+            </ul>
+        </aside>
+
+        <!-- Main Content Start-->
+        <main class="flex-grow-1 p-3 gup-content">
+            <router-outlet></router-outlet>
+        </main>
+        <!-- Main Content End-->
+    </div>
+    <footer class="footer bg-primary text-white shadow-sm py-1 mt-auto small">
+        <div class="container-fluid d-flex flex-column flex-md-row justify-content-between align-items-center px-4">
+            <div class="mb-2 mb-md-0 text-center text-md-start">
+                <span class="fw-semibold">© {{ currentYear }} ARAS </span> | v1.0.0
+                <span class="fw-semibold"> </span>
+            </div>
+            <span class="fw-semibold">Recon And Settlement Team - Task Planning</span>
+            <div class="text-center text-md-end">
+                <span>Developed by <a href="mailto:roshan.sahu@roshan.com"><strong class="text-white">Roshan Kumar
+                            Sahu</strong></a></span>
+            </div>
+        </div>
+    </footer>
+</div>
