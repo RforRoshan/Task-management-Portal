@@ -1,0 +1,16 @@
+<div class="container d-flex justify-content-center align-items-start page-center-70 pt-5">
+    <div class="row g-4 justify-content-center">
+
+        @for (item of navItems; track $index) {
+        <div class="col-md-6 d-flex justify-content-center" (click)="goTo(item.route)">
+            <div class="card text-center shadow-sm hover-card big-card">
+                <div class="card-body">
+                    <i [class]="item.className"></i>
+                    <h3 class="card-title mt-3 mycolour">{{item.label}}</h3>
+                </div>
+            </div>
+        </div>
+        }
+
+    </div>
+</div>

@@ -1,0 +1,83 @@
+@if(isLoading){ <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+
+@if(!isFullyLoaded){ <div class="spin-the-circle">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+@else {
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mx-auto min-max-width-700">
+    <div class="d-flex align-items-center w-100">
+        <div class="me-3 text-center mycolour flex-grow-1">
+            {{ projectname | uppercase }} RN / Feature List
+        </div>
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpen ? 'bi-chevron-up' : 'bi-chevron-down'" (click)="isOpen = !isOpen"
+        style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpen) {
+<div class="container-fluid m-0 p-0 small d-flex justify-content-center">
+    <div class=" table-response-small">
+        <table class="table table-bordered-my table-hover table-sm text-center align-middle">
+            <thead class="sticky-top">
+                <tr class="custom-table-header-clr">
+                    <th style="width: 80px;">S.No.</th>
+                    <th>RN / Feature Name</th>
+                    <th style="width: 90px;"></th>
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+                @for (rnAndFeature of rnAndFeatureList; track $index) {
+                <tr>
+                    <td class="p-2">{{ $index + 1 }}</td>
+
+                    @if(!rnAndFeature.isEditing){
+                    <td class="text-start p-2 align-items-center text-center">
+
+                        <span class="badge fs-7 fw-bold my-cursor-pointer"
+                            [ngStyle]="{'background-color': numberColorMap[$index + 1] || '#4CAF50'}"
+                            (click)="goToRNDetails(rnAndFeature)">
+                            {{ rnAndFeature.value }}</span>
+                    </td>
+                    <td class="p-2">
+
+                        <div class="d-flex gap-1">
+                            <button class="custom-btn" (click)="goToRNDetails(rnAndFeature)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="custom-btn" (click)="rnAndFeature.isEditing = true">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </div>
+                    </td>
+                    }
+                    @else {
+                    <td class="p-2">
+                        <input class="custom-input" [(ngModel)]="rnAndFeature.value" />
+                    </td>
+                    <td class="p-2">
+                        <button class="custom-btn" (click)="rnAndFeature.isEditing = false; updateButton(rnAndFeature)">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                    </td>
+                    }
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div
+    class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom mx-auto min-max-width-700">
+    <div>Showing {{ rnAndFeatureList.length }} entries</div>
+    <div class="flex-grow-1 d-flex justify-content-center">
+        <button class="custom-btn" (click)="addButton()">Add New RN</button>
+    </div>
+</div>
+}
+}

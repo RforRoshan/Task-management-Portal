@@ -1,0 +1,23 @@
+.page-center-70 {
+  height: 80vh; // full page height
+}
+
+.big-card {
+    width: 100%;
+    border-radius: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-origin: center center;
+    padding: 1.25rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.hover-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.07);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+  }
+}

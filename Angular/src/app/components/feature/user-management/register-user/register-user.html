@@ -1,0 +1,121 @@
+@if(isLoading){ <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+
+@if(!isFullyLoaded){ <div class="spin-the-circle">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+@else {
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mx-auto min-max-width-700">
+    <div class="d-flex align-items-center w-100">
+        <div class="me-3 text-center mycolour flex-grow-1">
+            Register New User
+        </div>
+    </div>
+</div>
+<div class="container-fluid m-0 p-0 small d-flex justify-content-center">
+    <div class="min-max-width-700 my-border pb-2">
+
+        <!-- First Name -->
+        <div class="mx-5">
+            <label class="p-1 mycolour fw-bold" for="firstName">First Name</label>
+            <input class="register-input" type="text" id="firstName" name="firstName" required
+                [(ngModel)]="user.firstName" #firstNameRef="ngModel" />
+            @if(firstNameRef.invalid && firstNameRef.touched){
+            <div class="text-danger mt-1">
+                First name is required.
+            </div>
+            }
+        </div>
+
+        <!-- Middle Name -->
+        <div class="mx-5">
+            <label class="p-1 mycolour fw-bold" for="middleName">Middle Name</label>
+            <input class="register-input" type="text" id="middleName" name="middleName" [(ngModel)]="user.middleName" />
+        </div>
+
+        <!-- Last Name -->
+        <div class="mx-5">
+            <label class="p-1 mycolour fw-bold" for="lastName">Last Name</label>
+            <input class="register-input" type="text" id="lastName" name="lastName" required [(ngModel)]="user.lastName"
+                #lastNameRef="ngModel" />
+            @if(lastNameRef.invalid && lastNameRef.touched){
+            <div class="text-danger mt-1">
+                Last name is required.
+            </div>
+            }
+        </div>
+
+        <!-- Email ID -->
+        <div class="mx-5">
+            <label class="p-1 mycolour fw-bold" for="emailId">Email ID</label>
+            <input class="register-input" type="email" id="emailId" name="emailId" required [(ngModel)]="user.email"
+                #emailRef="ngModel" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
+            @if(emailRef.invalid && emailRef.touched){
+            <div class="text-danger mt-1">
+                Valid Email is required.
+            </div>
+            }
+        </div>
+
+        <!-- Employee Number -->
+        <div class="mx-5">
+            <label class="p-1 mycolour fw-bold" for="employeeNumber">Employee Number</label>
+            <input class="register-input" type="number" id="employeeNumber" name="employeeNumber" required
+                [(ngModel)]="user.employeeNumber" #empNumRef="ngModel" />
+            @if(empNumRef.invalid && empNumRef.touched && empNumRef){
+            <div class="text-danger mt-1">
+                Employee number is required.
+            </div>
+            }
+
+        </div>
+        <div class="mx-5">
+            <label class="p-1 mycolour fw-bold">Project Access To</label>
+        </div>
+        @for(projectAccess of projectAccessList; track projectAccess){
+
+        <div class="mx-5 d-flex align-items-center gap-2 p-0.5">
+            @if(!projectAccess.isSelected){
+            <div class='col-6'>
+                <button (click)="projectAccess.isSelected = true" class="check-btn"> <i class="bi bi-square"></i>
+                </button>
+
+                <label class="form-check-label">
+                    {{ projectAccess.projectName }}
+                </label>
+            </div>
+            }
+            @else{
+            <div class='col-6'>
+                <button (click)="projectAccess.isSelected = false" class="check-btn"> <i class="bi bi-check-square"></i>
+                </button>
+                <label class="form-check-label">
+                    {{ projectAccess.projectName }}
+                </label>
+            </div>
+            <select class="form-select form-select-sm register-dropdown w-auto" [(ngModel)]="projectAccess.roleId">
+                @for (role of roles; track $index) {
+                <option [ngValue]="role.roleId">{{ role.roleName }}</option>
+                }
+            </select>
+            }
+
+
+
+        </div>
+        }
+    </div>
+
+</div>
+
+<div
+    class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom mx-auto min-max-width-700">
+    <div class="flex-grow-1 d-flex justify-content-center">
+        <button type="submit" class="custom-btn"
+            [disabled]="firstNameRef.invalid || lastNameRef.invalid || emailRef.invalid || empNumRef.invalid"
+            (click)="register()">Register</button>
+    </div>
+</div>
+}

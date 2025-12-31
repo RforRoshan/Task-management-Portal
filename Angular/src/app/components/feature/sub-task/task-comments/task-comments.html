@@ -1,0 +1,96 @@
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mt-5">
+
+    <div class="d-flex align-items-center w-100">
+        <div class="me-3 text-center min-width-8 mycolour">
+            Comments
+        </div>
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpen ? 'bi-chevron-up' : 'bi-chevron-down'" (click)="isOpen = !isOpen"
+        style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpen) {
+<div class="bordered-box container-fluid m-0 p-2 small">
+
+
+
+
+    <ckeditor [(ngModel)]="commentText" [editor]="Editor"></ckeditor>
+
+    <button (click)="addButton()" class="custom-btn mt-2 me-2" [disabled]="commentText.trim().length === 0">
+        Save
+    </button>
+    <button (click)="CancelComment()" class="custom-btn mt-2" [disabled]="commentText.trim().length === 0">
+        Cancel
+    </button>
+
+    <div class="mt-4">
+        @for (taskComment of taskComments; track $index) {
+
+        <div class="border p-2 mb-2 rounded bg-light">
+
+            <div class="d-flex align-items-center gap-2">
+                <div class="letter-avatar"
+                    [ngStyle]="{'background-color': colorMap[taskComment.firstName.charAt(0)] || '#4CAF50'}">
+                    {{ (taskComment.firstName.charAt(0) + taskComment.lastName.charAt(0)) | uppercase }}
+                </div>
+                <div class="pt-3">
+                    <div class="fw-bold">{{ taskComment.firstName}} {{taskComment.lastName}}</div>
+                    <div class="d-flex align-items-center gap-2 mb-3">
+
+                        <div>{{ taskComment.commentedOn | date: 'MMMM d, y, h:mm a' }}</div>
+                        @if(taskComment.isPreviouslyEdited){
+                        <div>(edited on {{taskComment.commentEditedOn | date: 'MMMM d, y, h:mm a' }})</div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="ps-5">
+                @if(!taskComment.isEdited) {
+
+                <div [innerHTML]="taskComment.comment"
+                    style="word-wrap: break-word; overflow-wrap: break-word; white-space: normal;"></div>
+                @if(taskComment.isSameUserComment) {
+                <button (click)="taskComment.isEdited = !taskComment.isEdited" class="custom-btn me-2">
+                    Edit
+                </button>
+                <button (click)="deleteButton(taskComment)" class="custom-btn">
+                    Delete
+                </button>
+                }
+                }
+                @else {
+                <ckeditor [(ngModel)]="taskComment.comment" [editor]="Editor"></ckeditor>
+
+                <button (click)="updateButton(taskComment)" class="custom-btn mt-3 me-2"
+                    [disabled]="taskComment.comment == taskComment.oldComment">
+                    Save
+                </button>
+                <button (click)="cancelUpdateComment(taskComment)" class="custom-btn mt-3">
+                    Cancel
+                </button>
+                }
+
+
+            </div>
+
+        </div>
+
+        }
+    </div>
+
+
+
+
+</div>
+<div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom">
+    <div class="d-flex align-items-center w-100">
+        <div class="m-3 text-center min-width-8 mycolour">
+
+        </div>
+    </div>
+</div>
+}

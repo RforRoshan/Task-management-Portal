@@ -1,0 +1,820 @@
+@if(isLoading){ <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+
+@if(!isFullyLoaded){ <div class="spin-the-circle">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+@else {
+
+
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold">
+
+    <div class="d-flex align-items-center w-100">
+        <div class="me-3 text-center">
+            <div class="d-flex align-items-center mx-4 ">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="text-nowrap fw-bold mycolour">Display Date:</div>
+                    <input class="custom-input" type="date" [(ngModel)]="displayDate"
+                        (ngModelChange)="getTaskData($event)" />
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpen ? 'bi-chevron-up' : 'bi-chevron-down'" (click)="isOpen = !isOpen"
+        style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpen) {
+<div class="justify-content-between align-items-center p-2 border border-top-0">
+
+    <div class="d-flex align-items-center flex-wrap mt-3">
+
+
+        <div class="d-flex align-items-center ps-4 fw-bold fs-5 me-2 min-width-8">
+            <span class="me-2">Seq. No.</span> <span class="mybackground badge fs-6 ">{{ taskSeq }}</span>
+        </div>
+
+
+        <div class="d-flex align-items-center ps-4 fw-bold fs-5 me-2">
+            Task Name:
+        </div>
+
+        <div class="d-flex align-items-center ">
+            @if (!isEditing) {
+            <div class="me-2 text-start mybackground badge fs-5 task-name-in-subtask">{{ taskName }}</div>
+            }
+            @else {
+            <input class="custom-input min-width-60" [(ngModel)]="taskName" />
+            }
+
+
+        </div>
+
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-5">
+
+        <div class="d-flex align-items-center ps-4 col">
+            <span class="me-2">
+                <span class="fw-bold">Category: </span>
+                @if (!isEditing) {
+                <span class="badge fs-6" [ngClass]="classColorMap[catagory.charAt(0)] || 'bg-secondary'">
+                    {{ catagory }}
+                </span>
+                }
+            </span>
+            @if (isEditing) {
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="catagory">
+                @for (catagory of categoryList; track $index) {
+                <option [ngValue]="catagory.value">{{ catagory.value }}</option>
+                }
+            </select>
+            }
+        </div>
+
+        <div class="d-flex align-items-center ps-4 col">
+            <span class="me-2">
+                <span class="fw-bold">Project: </span>
+                @if (!isEditing) {
+                <span>{{ subProject }}</span>
+                }
+            </span>
+            @if (isEditing) {
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="subProject">
+                @for (project of projectList; track $index) {
+                <option [ngValue]="project.value">{{ project.value }}</option>
+                }
+            </select>
+            }
+        </div>
+
+        <div class="d-flex align-items-center ps-4 col">
+            <span class="me-2">
+                <span class="fw-bold">Network: </span>
+                @if (!isEditing) {
+                <!-- <span class="badge fs-6" [ngStyle]="{'background-color': colorMap[network.charAt(0)] || '#4CAF50'}">{{
+                    network
+                    }}
+                </span> -->
+                {{ network }}
+                }
+            </span>
+            @if (isEditing) {
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="network">
+                @for (network of networkList; track $index) {
+                <option [ngValue]="network.value ">{{ network.value }}</option>
+                }
+            </select>
+            }
+        </div>
+
+        <div class="d-flex align-items-center ps-4 col">
+            <span class="me-2">
+                <span class="fw-bold">Status: </span>
+                @if (!isEditing) {
+                <span class="badge fs-6"
+                    [ngStyle]="{'background-color': statusColorMap[status.charAt(0)] || '#4CAF50'}">{{
+                    status }}</span>
+                }
+            </span>
+            @if (isEditing) {
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="status">
+                @for (status of statusList; track $index) {
+                <option [ngValue]="status.value">{{ status.value }}</option>
+                }
+            </select>
+            }
+        </div>
+
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-3">
+
+        <div class="d-flex align-items-center ps-4 col-3">
+            <span class="me-2">
+                <span class="fw-bold">Last Day Work: </span>
+                <span>{{ lastDayWork ? 'Yes' : 'No' }}</span>
+            </span>
+        </div>
+
+        <div class="d-flex align-items-center ps-4 col-3">
+            <span class="me-2">
+                <span class="fw-bold">Item To Discuss: </span>
+                @if (!isEditing) {
+                <span>{{ itemToDiscuss ? 'Yes' : 'No' }}</span>
+                }
+            </span>
+            @if (isEditing) {
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="itemToDiscuss">
+                <option [ngValue]="true">Yes</option>
+                <option [ngValue]="false">No</option>
+            </select>
+            }
+        </div>
+
+        <div class="d-flex align-items-center ps-4 col-3 gap-2">
+
+            <div class="fw-bold">Resource: </div>
+
+            @if (isEditing && !isApprove && usedETA <= 0) { <select
+                class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="userName">
+                @for (resourceName of resourceNamesList; track $index) {
+                <option [ngValue]="resourceName.userName">{{ resourceName.name }}</option>
+                }
+                </select>
+                }
+                @else {
+                <div class="d-flex align-items-center gap-1">
+                    <div class="letter-avatar mybackground">
+                        {{ (firstName.charAt(0) + lastName.charAt(0)) | uppercase }}
+                    </div>
+                    <div class="">
+                        <div>{{ firstName}} {{lastName}}</div>
+                    </div>
+                </div>
+                }
+        </div>
+
+
+        <div class="d-flex align-items-center  ps-4 col-3">
+            <span class="me-2">
+                <span class="fw-bold">Jira: </span>
+                @if(!isEditing) {
+                @if(jira !== 'N.A.' && jira !== ''){
+                <span class="badge fs-6 my-cursor-pointer" (click)="openJiraInNewTab(jira)"
+                    [ngStyle]="{'background-color': jiraColorMap[jira.substring(0, 3).toUpperCase()] || '#A7C7E7'}">
+                    {{ jira }}
+                </span>
+                }
+                @else {
+                <span class="badge fs-6" [ngStyle]="{'background-color': '#A7C7E7'}">
+                    {{ jira }}
+                </span>
+                }
+                }
+
+            </span>
+            @if(isEditing) {
+            <input class="custom-input min-max-width-6" [(ngModel)]="jira" />
+            }
+
+
+        </div>
+
+
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-3">
+
+        <div class="d-flex align-items-center px-4 col-3">
+            <div class="fw-bold me-2">Last Day Hrs Used: </div>
+
+
+            <div class="d-flex flex-column">
+
+                @for (eHrsLast1 of eHrsLast; track $index) {
+                <div class="badge fs-7 m-1"
+                    [ngStyle]="{'background-color': colorMap[eHrsLast1.firstName.toUpperCase().charAt(0)] || '#4CAF50'}">
+                    {{ eHrsLast1.firstName}}-{{eHrsLast1.worksHrs}}
+                </div>
+
+                }
+
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center px-4 col-6">
+            <span class="me-2 d-flex align-items-center">
+                <span class="fw-bold">Comments: </span>
+                @if (!isEditing) {
+                <span class="display-text-area-data ps-2">{{
+                    myComments
+                    }}</span>
+                }
+            </span>
+            @if (isEditing) {
+            <textarea class="custom-input-textarea" [(ngModel)]="myComments" rows="2"></textarea>
+            }
+        </div>
+
+
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-3">
+
+        <div class="d-flex align-items-center px-4 col-3">
+            <span class="fw-bold">Today Work: </span>
+            <span class="ps-2">{{ todayDayWork ? 'Yes' : 'No' }}</span>
+        </div>
+
+        <div class="d-flex align-items-center px-4 col-3">
+            <span class="fw-bold">Estimated Hrs for Today: </span>
+            <span class="display-text-area-data ps-2">{{ eHrsToday }}</span>
+        </div>
+
+        <div class="d-flex align-items-center px-4 col-6">
+            <span class="fw-bold">Manager Comments: </span>
+            <span class="display-text-area-data ps-2">{{ managerComments }}</span>
+        </div>
+
+
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-3 ">
+        <div class="d-flex align-items-center px-4 col-6 gap-2">
+            <span class="fw-bold text-nowrap">Mail Titled:</span>
+            @if(!isEditing){
+            <span class="display-text-area-data ps-2">{{ mailTitled }}</span>
+            }
+            @else {
+            <textarea class="custom-input-textarea" [(ngModel)]="mailTitled" rows="2"></textarea>
+            }
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-5">
+
+        <div class="px-4 mycolour fw-bold">
+            Below is for RN / Feature List Details
+        </div>
+
+
+    </div>
+
+    @if(!isEditing){
+
+    <div class="d-flex align-items-center flex-wrap mt-3 ">
+
+        <div class="d-flex align-items-center px-4 col-3">
+            <span class="fw-bold">RN: </span>
+            <span class="mx-2 ps-2 badge fs-7 my-cursor-pointer" (click)="goToRNDetails(rnGuidId)"
+                [ngStyle]="{'background-color': '#20C997'}">{{ rnName }}</span>
+        </div>
+
+        <div class="d-flex align-items-center px-4 col-3">
+            <span class="fw-bold">Fix version: </span>
+            <span class="ps-2">{{ fixVersion }}</span>
+        </div>
+        <div class="d-flex align-items-center px-4 col-6">
+            <span class="fw-bold text-nowrap">RN Feature Name: </span>
+            <span class="display-text-area-data ps-2">{{ featureName }}</span>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-3 mb-2">
+
+        <div class="d-flex align-items-center px-4 col-6">
+            <span class="fw-bold text-nowrap">RN Comments: </span>
+            <span class="display-text-area-data ps-2">{{ rnComments }}</span>
+        </div>
+    </div>
+    }
+    @else{
+
+    <div class="d-flex align-items-center flex-wrap mt-3 ">
+
+        <div class="d-flex align-items-center px-4 col-3 gap-2">
+            <span class="fw-bold">RN: </span>
+            <select class="form-select form-select-sm custom-input-colour w-auto" [(ngModel)]="rnGuidId">
+                @for (rNAndFeature of rnAndFeatureList; track $index) {
+                <option [ngValue]="rNAndFeature.guidId">{{ rNAndFeature.value }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="d-flex align-items-center px-4 col-3 gap-2">
+            <span class="fw-bold">Fix version: </span>
+            <input class="custom-input min-max-width-6" [(ngModel)]="fixVersion" />
+        </div>
+        <div class="d-flex align-items-center px-4 col-6 gap-2">
+            <div class="fw-bold text-nowrap">RN Feature Name: </div>
+            <textarea class="custom-input-textarea" [(ngModel)]="featureName" rows="1"></textarea>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap mt-3 mb-2">
+
+        <div class="d-flex align-items-center px-4 col-6 gap-2">
+            <span class="fw-bold text-nowrap">RN Comments: </span>
+            <textarea class="custom-input-textarea" [(ngModel)]="rnComments" rows="2"></textarea>
+        </div>
+    </div>
+    }
+
+
+</div>
+}
+
+<div class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-bottom bg-light">
+
+    <div class="d-flex align-items-center flex-wrap gap-2">
+        <div class="text-center min-width-4 me-2">
+            @if(!isEditing) {
+            <button class="custom-btn" (click)="isEditing = true">
+                <!-- <i class="bi bi-pencil-square"></i> -->
+                Edit
+            </button>
+            }
+            @else {
+            <button class="custom-btn" (click)="isEditing = false; updateDailyTask()">
+                <!-- <i class="bi bi-check-lg"></i> -->
+                Save
+            </button>
+            }
+
+        </div>
+
+        <div class="d-flex align-items-center ps-3 border-start">
+            <span class="me-2">
+                <span class="fw-bold">ETA Approval: </span>
+                @if(isApprove){
+
+                <span class="badge fs-6 bg-success">Approved</span>
+                }
+                @else {
+                <span class="badge fs-6 bg-danger"> Pending</span>
+                }
+
+            </span>
+
+        </div>
+
+        <div class="d-flex align-items-center ps-3 border-start">
+            <span class="me-2">
+                <span class="fw-bold">ETA: </span>
+                <span class="badge fs-6" style="background-color: #009688;">
+                    {{ totalETA | displayHrs:true}}
+                </span>
+
+            </span>
+
+        </div>
+        <div class="d-flex align-items-center ps-3 border-start">
+            <span class="me-2">
+                <span class="fw-bold">Used ETA: </span>
+                <span class="badge fs-6" style="background-color: #2196F3;">{{ usedETA | displayHrs:true }}</span>
+
+            </span>
+
+        </div>
+        <div class="d-flex align-items-center ps-3 border-start">
+            <span class="me-2">
+                <span class="fw-bold"> Left ETA: </span>
+                <span class="badge fs-6 bg-danger">{{ totalETA | leftETA:usedETA}}</span></span>
+        </div>
+        @if(otherUsedETA !== 0){
+        <div class="d-flex align-items-center ps-3 border-start">
+            <span class="me-2">
+                <span class="fw-bold"> Other person contribution: </span>
+                <span class="badge fs-6 bg-warning">{{ otherUsedETA | displayHrs:true}}</span></span>
+        </div>
+        <div class="d-flex flex-column align-items-center border-start">
+
+            @for (otherUsedHrs of otherTotalUsedHrs; track $index) {
+            <div class="badge fs-7 m-1"
+                [ngStyle]="{'background-color': colorMap[otherUsedHrs.firstName.toUpperCase().charAt(0)] || '#4CAF50'}">
+                {{ otherUsedHrs.firstName}}-{{otherUsedHrs.worksHrs}}
+            </div>
+
+            }
+
+        </div>
+        }
+        @if(isManager && !isApprove && totalETA > 0){
+        <div class="d-flex align-items-center ps-3 border-start">
+            <button class="custom-btn" (click)="approveAllETA(taskUniqueId)">
+                Click To Approve ETA
+            </button>
+        </div>
+
+        }
+
+    </div>
+
+</div>
+
+
+<!-- =======================================Sub Task============================================= -->
+
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mt-5">
+    <div class="me-3 text-center min-width-8 mycolour">
+        Sub Tasks
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpenSelfSubTasks ? 'bi-chevron-up' : 'bi-chevron-down'"
+        (click)="isOpenSelfSubTasks = !isOpenSelfSubTasks" style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpenSelfSubTasks) {
+<div class="container-fluid m-0 p-0 small">
+    <div class="">
+        <table class="table table-bordered-my table-hover">
+            <thead class="sticky-top">
+                <tr class="text-nowrap text-center align-middle custom-table-header-clr">
+                    <th>S.No.</th>
+                    <th class="sticky-sub-task-name">SubTask Name</th>
+                    <th>Remark</th>
+                    <th>ETA</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th><span>SubTask</span><br><span>ETA</span><br><span>Approval</span></th>
+                    <th>Time Log</th>
+
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+
+                @for (subTask of subTasks; track $index) {
+                <tr class="align-middle text-center">
+
+                    @if(!subTask.isEditing){
+
+                    <td>{{ subTask.subTaskSeq }}</td>
+                    <td class="display-text-area-data sticky-sub-task-name">{{ subTask.subTaskName }}</td>
+                    <td class="display-text-area-data min-width-8 max-width-12">{{ subTask.remark }}</td>
+                    <td>{{ subTask.subTaskETA | displayHrs }}</td>
+                    <td>
+                        <div class="d-flex gap-1 align-items-center justify-content-center">
+                            <button class="custom-btn" (click)="subTask.isEditing = true">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            @if(isSameUser){
+                            <button class="custom-btn" (click)="addWorkHrs(subTask)">
+                                <i class="bi bi-stopwatch"></i>
+                            </button>
+                            }
+                        </div>
+                    </td>
+                    <td class="text-nowrap">
+                        <span class="badge fs-7 fw-bold"
+                            [ngStyle]="{'background-color': statusColorMap[subTask.status.charAt(0)] || '#4CAF50'}">{{
+                            subTask.status }}</span>
+
+                    </td>
+
+                    }
+                    @else {
+
+                    <td>
+                        <input class="custom-input min-max-width-4" type="number" step="1" min="0" inputmode="numeric"
+                            [(ngModel)]="subTask.subTaskSeq"
+                            (input)="subTask.subTaskSeq = Math.floor(subTask.subTaskSeq || 0)" />
+                    </td>
+                    <td class="sticky-sub-task-name">
+                        <textarea class="custom-input-textarea" [(ngModel)]="subTask.subTaskName" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea class="custom-input-textarea" [(ngModel)]="subTask.remark" rows="2"></textarea>
+                    </td>
+                    <td>
+                        @if(!subTask.isApprove){
+                        <input class="custom-input min-max-width-4" type="number" step="0.5" min="0" inputmode="decimal"
+                            [(ngModel)]="subTask.subTaskETA" />
+
+                        }
+                        @else {
+                        {{ subTask.subTaskETA | displayHrs }}
+                        }
+                    </td>
+                    <td>
+                        <button class="custom-btn" (click)="subTask.isEditing = false; updateSelfSubTask(subTask)">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm custom-input-colour w-auto"
+                            [(ngModel)]="subTask.status">
+                            @for (status of subTaskStatusList; track $index) {
+                            <option [ngValue]="status">{{ status }}</option>
+                            }
+                        </select>
+                    </td>
+
+                    }
+                    <td>
+                        @if(!isApprove){
+                        <span class="badge fs-7 bg-danger">Pending</span>
+                        }
+                        @else {
+                        @if(subTask.isApprove){
+                        <span class="badge fs-7 bg-success">Approved</span>
+                        }
+                        @else if(isManager){
+
+                        <div class="min-width-8">
+                            <button class="custom-btn" (click)="approveSubTaskETA(subTask)">Approve Sub ETA </button>
+                        </div>
+
+                        }
+                        @else{
+                        <span class="badge fs-7 bg-danger">Pending</span>
+                        }
+                        }
+
+                    </td>
+                    <td>
+
+                        <div class="align-items-center justify-content-center mt-2 ">
+
+                            @if(isSameUser){ @for (workEntry of subTask.workEntrys; track $index) {
+
+                            <div class="work-entry-edit-td justify-content-center">
+                                <span class="">{{workEntry.entryDate}}</span>—<strong>
+
+                                    @if(!workEntry.isEditing){
+                                    <span class="badge "
+                                        style="color: black; background-color: azure; font-size: 0.9rem">{{workEntry.entryHrs
+                                        | displayHrs}}</span>
+                                    <button class="work-entry-edit-btn" (click)="workEntry.isEditing = true">
+                                        <i class="bi bi-pencil-square small-icon mycolour"></i>
+                                    </button>
+                                    }
+                                    @else {
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <input class="custom-input min-max-width-4" type="number" step="0.5" min="0"
+                                            inputmode="decimal" [(ngModel)]="workEntry.entryHrs" />
+
+
+                                        <button class="custom-btn"
+                                            (click)="workEntry.isEditing = false;updateWorkTimeAPICall(workEntry, subTask)">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </div>
+                                    }
+
+                                </strong>
+                            </div>
+                            }}
+                            @else { @for (workEntry of subTask.workEntrys; track $index) {
+
+                            <div class="work-entry-edit-td">
+                                <span class="">{{workEntry.entryDate}}</span>—<strong>
+
+                                    <span class="badge "
+                                        style="color: black; background-color: azure; font-size: 0.9rem">{{workEntry.entryHrs
+                                        | displayHrs}}</span>
+
+                                </strong>
+                            </div>
+                            }}
+
+
+                        </div>
+
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+    <div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom">
+        <div>Showing {{ subTasks.length }} SubTasks</div>
+        <div class="flex-grow-1 d-flex justify-content-center gap-2">
+            <button class="custom-btn" (click)="addSelfSubTask()">Add New Sub Task</button>
+
+            <button class="custom-btn" (click)="isNeedToCallCopyPage = true">Copy Sub Task from other task</button>
+            <button class="custom-btn" (click)="exportToExcel()">Export To Excel</button>
+        </div>
+    </div>
+</div>
+
+}
+
+
+<!-- ================================================================================ -->
+
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mt-2">
+    <div class="px-5 text-center mycolour">
+        Other Resource Sub Tasks (Contribution of other resources)
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpenOtherSubTasks ? 'bi-chevron-up' : 'bi-chevron-down'"
+        (click)="isOpenOtherSubTasks = !isOpenOtherSubTasks"
+        style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpenOtherSubTasks) {
+<div class="container-fluid m-0 p-0 small">
+    <div class="">
+        <table class="table table-bordered-my table-hover">
+            <thead class="sticky-top">
+                <tr class="text-nowrap text-center align-middle custom-table-header-clr">
+                    <th>S.No.</th>
+                    <th class="sticky-sub-task-name">SubTask Name</th>
+                    <th>Remark</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th>Resource</th>
+                    <th>Time Log</th>
+
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+
+                @for (otherSubTask of otherSubTasks; track $index) {
+                <tr class="align-middle text-center">
+
+                    @if(!otherSubTask.isEditing){
+
+                    <td>{{ otherSubTask.subTaskSeq }}</td>
+                    <td class="display-text-area-data sticky-sub-task-name">{{ otherSubTask.subTaskName }}</td>
+                    <td class="display-text-area-data min-width-8 max-width-12">{{ otherSubTask.remark }}</td>
+                    <td>
+                        <div class="d-flex gap-1 align-items-center justify-content-center">
+                            <button class="custom-btn" (click)="otherSubTask.isEditing = true">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            @if(!isSameUser){
+                            @if(otherSubTask.workEntrys.length === 0 || otherSubTask.workEntrys[0]?.userId ===
+                            currentUserId){
+                            <button class="custom-btn" (click)="addWorkHrs(otherSubTask)">
+                                <i class="bi bi-stopwatch"></i>
+                            </button>
+                            }
+                            }
+                        </div>
+                    </td>
+                    <td class="text-nowrap">
+                        <span class="badge fs-7 fw-bold"
+                            [ngStyle]="{'background-color': statusColorMap[otherSubTask.status.charAt(0)] || '#4CAF50'}">{{
+                            otherSubTask.status }}</span>
+
+                    </td>
+
+                    }
+                    @else {
+
+                    <td>
+                        <input class="custom-input min-max-width-4" type="number" step="1" min="0" inputmode="numeric"
+                            [(ngModel)]="otherSubTask.subTaskSeq"
+                            (input)="otherSubTask.subTaskSeq = Math.floor(otherSubTask.subTaskSeq || 0)" />
+                    </td>
+                    <td class="sticky-sub-task-name">
+                        <textarea class="custom-input-textarea" [(ngModel)]="otherSubTask.subTaskName"
+                            rows="2"></textarea>
+                    </td>
+                    <td>
+                        <textarea class="custom-input-textarea" [(ngModel)]="otherSubTask.remark" rows="2"></textarea>
+                    </td>
+                    <td>
+                        <button class="custom-btn"
+                            (click)="otherSubTask.isEditing = false; updateOtherSubTask(otherSubTask)">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm custom-input-colour w-auto"
+                            [(ngModel)]="otherSubTask.status">
+                            @for (status of subTaskStatusList; track $index) {
+                            <option [ngValue]="status">{{ status }}</option>
+                            }
+                        </select>
+                    </td>
+
+                    }
+                    <td>
+                        @if(otherSubTask.workEntrys.length > 0){
+                        <span class="badge fs-7 m-1 fw-bold"
+                            [ngStyle]="{'background-color': colorMap[otherSubTask.workEntrys[0].firstName.toUpperCase().charAt(0)] || '#4CAF50'}">{{otherSubTask.workEntrys[0].firstName}}
+                        </span>
+                        }
+
+                    </td>
+                    <td>
+
+                        @for (workEntry of otherSubTask.workEntrys; track $index) {
+
+                        <div class="work-entry-edit-td">
+                            <span class="">{{workEntry.entryDate}}</span>—
+
+                            @if(currentUserId === workEntry.userId){
+                            @if(!workEntry.isEditing){
+                            <span class="badge fw-bold"
+                                style="color: black; background-color: azure; font-size: 0.9rem">{{workEntry.entryHrs
+                                | displayHrs}}</span>
+                            <button class="work-entry-edit-btn" (click)="workEntry.isEditing = true">
+                                <i class="bi bi-pencil-square small-icon mycolour"></i>
+                            </button>
+                            }
+                            @else {
+                            <div class="d-flex justify-content-center gap-2">
+                                <input class="custom-input min-max-width-4" type="number" step="0.5" min="0"
+                                    inputmode="decimal" [(ngModel)]="workEntry.entryHrs" />
+
+
+                                <button class="custom-btn"
+                                    (click)="workEntry.isEditing = false;updateWorkTimeAPICall(workEntry, otherSubTask)">
+                                    <i class="bi bi-check-lg"></i>
+                                </button>
+                            </div>
+                            }
+                            }
+                            @else {
+                            <span class="badge fw-bold"
+                                style="color: black; background-color: azure; font-size: 0.9rem">{{workEntry.entryHrs |
+                                displayHrs}}
+                            </span>
+                            }
+                        </div>
+                        }
+
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+    <div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom">
+        <div>Showing {{ otherSubTasks.length }} Other sub tasks contribution</div>
+        <div class="flex-grow-1 d-flex justify-content-center">
+            <button class="custom-btn" (click)="addOtherSubTask()">Add Other Contribution Sub Task</button>
+        </div>
+    </div>
+</div>
+
+
+}
+
+<!-- ============================Sub Task END==================================================== -->
+
+
+
+
+
+
+
+
+
+@if(taskUniqueId !== undefined && taskUniqueId !== ''){
+<rks-task-comments [taskUniqueId]="taskUniqueId" [projectname]="projectname"></rks-task-comments>
+@if(resourceNamesListForLog !== undefined && resourceNamesListForLog.length > 0){
+<rks-sub-task-history [taskUniqueId]="taskUniqueId"
+    [resourceNamesListForLog]="resourceNamesListForLog"></rks-sub-task-history>
+}
+}
+
+@if(isNeedToCallCopyPage){
+<rks-copy-task [projectname]="projectname" (closed)="afterCopyPageClosed($event)"> </rks-copy-task>
+}
+}

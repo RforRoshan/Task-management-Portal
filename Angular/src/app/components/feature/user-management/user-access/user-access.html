@@ -1,0 +1,80 @@
+@if(isLoading){ <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+
+@if(!isFullyLoaded){ <div class="spin-the-circle">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+@else {
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mx-auto min-max-width-700">
+    <div class="d-flex align-items-center w-100">
+        <div class="me-3 text-center mycolour flex-grow-1">
+            Project Access Controls
+        </div>
+    </div>
+</div>
+<div class="container-fluid m-0 p-0 small d-flex justify-content-center">
+    <div class="min-max-width-700 my-border pb-2">
+        <div class="mx-5 d-flex align-items-center gap-2 p-0.5 my-5">
+
+            <div class='col-4'>
+                <label class="p-1 mycolour fw-bold">Select the User: </label>
+            </div>
+            <select class="form-select form-select-sm register-dropdown w-auto" [(ngModel)]="userId"
+                (ngModelChange)="getUserAccess()">
+                @for (userIdName of userIdNames; track $index) {
+                <option [ngValue]="userIdName.userId">{{ userIdName.userName }}</option>
+                }
+            </select>
+
+
+        </div>
+
+        @if(userId !== 0 && showProject){
+
+        <div class="mx-5">
+            <label class="p-1 mycolour fw-bold">Project Access To</label>
+        </div>
+        @for(projectAccess of projectAccessList; track projectAccess.projectId){
+
+        <div class="mx-5 d-flex align-items-center gap-2 p-0.5">
+            @if(!projectAccess.isSelected){
+            <div class='col-6'>
+                <button (click)="projectAccess.isSelected = true" class="check-btn"> <i class="bi bi-square"></i>
+                </button>
+
+                <label class="form-check-label">
+                    {{ projectAccess.projectName }}
+                </label>
+            </div>
+            }
+            @else{
+            <div class='col-6'>
+                <button (click)="projectAccess.isSelected = false" class="check-btn"> <i class="bi bi-check-square"></i>
+                </button>
+                <label class="form-check-label">
+                    {{ projectAccess.projectName }}
+                </label>
+            </div>
+            <select class="form-select form-select-sm register-dropdown w-auto" [(ngModel)]="projectAccess.roleId">
+                @for (role of roles; track $index) {
+                <option [ngValue]="role.roleId">{{ role.roleName }}</option>
+                }
+            </select>
+            }
+
+        </div>
+        }
+        }
+    </div>
+
+</div>
+
+<div
+    class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom mx-auto min-max-width-700">
+    <div class="flex-grow-1 d-flex justify-content-center">
+        <button type="submit" class="custom-btn" (click)="updateAccess()">Update</button>
+    </div>
+</div>
+}

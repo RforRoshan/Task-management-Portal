@@ -1,0 +1,71 @@
+@if(isLoading){ <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+
+@if(!isFullyLoaded){ <div class="spin-the-circle">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+@else {
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mx-auto min-max-width-700">
+    <div class="d-flex align-items-center w-100">
+        <div class="me-3 text-center mycolour flex-grow-1">
+            {{ projectname | uppercase }} Resource Values Show Hide Setup
+        </div>
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpen ? 'bi-chevron-up' : 'bi-chevron-down'" (click)="isOpen = !isOpen"
+        style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpen) {
+<div class="container-fluid m-0 p-0 small d-flex justify-content-center">
+    <div class=" table-response-small">
+        <table class="table table-bordered-my table-hover table-sm text-center align-middle">
+            <thead class="sticky-top">
+                <tr class="custom-table-header-clr">
+                    <th style="width: 80px;">S.No.</th>
+                    <th>Email Id</th>
+                    <th>Name</th>
+                    <th style="width: 80px;"></th>
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+                @for (resourceName of resourceNames; track $index) {
+                <tr>
+                    <td class="p-2">{{ $index + 1 }}</td>
+                    <td class="text-start p-2">{{ resourceName.userName }}</td>
+                    <td class="text-start">
+
+                        <div class="d-flex align-items-center gap-1 justify-content-center">
+                            <div class="letter-avatar"
+                                [ngStyle]="{'background-color': colorMap[resourceName.name.charAt(0)] || '#4CAF50'}">
+                                {{ resourceName.name.charAt(0) + resourceName.lastName.charAt(0) | uppercase }}
+                            </div>
+                            <div class="">
+                                <div>{{ resourceName.name}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-2">
+                        @if(!resourceName.isShow){
+                        <button class="custom-btn" (click)="showNameButton(resourceName)">Show</button>
+                        }
+                        @else{
+                        <button class="custom-btn" (click)="hideNameButton(resourceName)">Hide</button>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div
+    class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom mx-auto min-max-width-700">
+    <div>Showing {{ resourceNames.length }} entries</div>
+</div>
+}
+}

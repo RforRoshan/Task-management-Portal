@@ -1,0 +1,70 @@
+<div class="d-flex flex-column vh-100">
+    <div
+        class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mx-auto min-max-width-700 mt-5">
+        <div class="d-flex align-items-center w-100">
+            <div class="me-3 text-center mycolour flex-grow-1">
+                First Time Login - Change Password
+            </div>
+        </div>
+    </div>
+    <form #resetForm="ngForm" (ngSubmit)="changePassword()">
+        <div class="container-fluid m-0 p-0 small d-flex justify-content-center">
+            <div class="min-max-width-700 my-border pb-2">
+
+                <div class="mx-5">
+                    <label class="p-1 mycolour fw-bold" for="newPassword">New Password</label>
+                    <div class="password-wrapper">
+                        <input class="register-input" [type]="showNewPassword ? 'text' : 'password'" id="newPassword"
+                            name="newPassword" required [(ngModel)]="newPassword" #newPasswordRef="ngModel" />
+                        <span class="toggle" (click)="showNewPassword = !showNewPassword">
+                            {{ showNewPassword ? '🙈' : '👁️' }}
+                        </span>
+                    </div>
+                    @if(newPasswordRef.invalid && newPasswordRef.touched){
+                    <div class="text-danger mt-1">
+                        Password must be 8+ chars, include upper, lower, number, and one of
+                        (@, $, &, %).
+                    </div>
+                    }
+                </div>
+
+                <div class="mx-5">
+                    <label class="p-1 mycolour fw-bold" for="confirmPassword">Confirm Password</label>
+                    <input class="register-input" type="password" id="confirmPassword" name="confirmPassword" required
+                        [(ngModel)]="confirmPassword" #confirmPasswordRef="ngModel" />
+                    @if(confirmPassword !== newPassword && confirmPasswordRef.touched){
+                    <div class="text-danger mt-1">
+                        Confirm Passwords do not match with New Password.
+                    </div>
+                    }
+                </div>
+
+            </div>
+
+        </div>
+
+        <div
+            class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom mx-auto min-max-width-700">
+            <div class="flex-grow-1 d-flex justify-content-center">
+                <button type="submit" [disabled]="resetForm.invalid || confirmPassword !== newPassword"
+                    class="custom-btn">Change Password</button>
+            </div>
+        </div>
+    </form>
+    <footer class="footer bg-primary text-white shadow-sm py-1 mt-auto small">
+        <div class="container-fluid d-flex flex-column flex-md-row justify-content-between align-items-center px-4">
+            <div class="mb-2 mb-md-0 text-center text-md-start">
+                <span class="fw-semibold">© {{ currentYear }} ARAS </span> | v1.0.0
+                <span class="fw-semibold"> </span>
+            </div>
+            <span class="fw-semibold">Recon And Settlement Team - Task Planning </span>
+            <div class="text-center text-md-end">
+                <span>Developed by <a href="mailto:roshan.sahu@roshan.com"><strong class="text-white">Roshan Kumar
+                            Sahu</strong></a></span>
+            </div>
+        </div>
+    </footer>
+</div>
+@if(isLoading){ <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}

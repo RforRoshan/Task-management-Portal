@@ -1,0 +1,85 @@
+@if(!isFullyLoaded){ <div class="spin-the-circle">
+    <div class="spinner-border text-primary" role="status"> </div>
+</div>}
+@else {
+
+<div class="container-fluid mt-4 py-1 mt-auto small">
+
+    <div class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top">
+
+        <div class="px-5 fw-bold table-heading">
+            <span class="badge fs-5 fw-bold align-items-center p-2" [ngStyle]="{'background-color': '#4CAF50'}">
+                {{ rnName }}</span>
+            <span class="p-2">
+                -- RN / Feature List Details
+            </span>
+        </div>
+
+        <!-- <div class="form-group">
+            <input type="text" [(ngModel)]="searchTerm" placeholder="Search..."
+                class="form-control custom-input-colour">
+        </div> -->
+    </div>
+
+    <div class="custom-table-responsive">
+        <table class="table table-bordered-my table-hover">
+            <thead class="sticky-top">
+                <tr class="text-nowrap text-center align-middle custom-table-header-clr">
+                    <th>S.No.</th>
+                    <th>Jira</th>
+                    <th class="task-name-show">Feature Name</th>
+                    <th><span>Fix</span><br><span>Version</span></th>
+                    <th><span>RN</span><br><span>Comments</span></th>
+                    <th>Resource</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+
+                @for (task of tasks; track $index) {
+                <tr class="align-middle text-center">
+                    <td>{{ $index + 1 }}</td>
+                    <td class="text-nowrap">
+                        @if(task.jira !== 'N.A.' && task.jira !== ''){
+                        <span class="badge fs-7 my-cursor-pointer" (click)="openJiraInNewTab(task.jira)"
+                            [ngStyle]="{'background-color': jiraColorMap[task.jira.substring(0, 3).toUpperCase()] || '#4CAF50'}">
+                            {{ task.jira }}
+                        </span>
+                        }
+                    </td>
+                    <td class="display-text-area-data">
+                        {{ task.featureName }}
+                    </td>
+                    <td>{{ task.fixVersion }}</td>
+                    <td class="display-text-area-data min-max-width-15">{{ task.rnComments }}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-1 justify-content-center">
+                            <div class="letter-avatar"
+                                [ngStyle]="{'background-color': colorMap[task.firstName.toUpperCase().charAt(0)] || '#4CAF50'}">
+                                {{ task.firstName.charAt(0) | uppercase }}
+                            </div>
+                            <div class="">
+                                <div>{{ task.firstName }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-nowrap min-max-width-8">
+                        <button class="custom-btn" (click)="goToTask(task)">Go To Task</button>
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div
+        class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom border border-top-1">
+        <div>Total {{ tasks.length }} Features</div>
+        <div class="flex-grow-1 d-flex justify-content-center gap-2">
+            <button class="custom-btn" (click)="exportToExcel()">Export To Excel</button>
+        </div>
+
+    </div>
+</div>
+}

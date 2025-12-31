@@ -1,0 +1,109 @@
+<div
+    class="custom-table-header d-flex justify-content-between align-items-center mb-0 p-2 rounded-top bg-light fw-bold mt-5">
+
+    <div class="d-flex align-items-center w-100">
+        <div class="me-3 text-center min-width-8 mycolour">
+            History
+        </div>
+    </div>
+
+    <i class="bi mycolour" [ngClass]="isOpen ? 'bi-chevron-up' : 'bi-chevron-down'" (click)="callLogData()"
+        style="cursor: pointer; font-size: 1.6rem; min-width: 3vw;">
+    </i>
+</div>
+
+@if(isOpen) {
+<!-- <div class="justify-content-between align-items-center p-2 border border-top-0">
+
+
+</div> -->
+
+<!-- 
+<div class="container-fluid m-0 p-0 small">
+
+    <div class="bordered-box container-fluid m-0 p-2 small">
+        <div class="mt-2">
+            @for (tasksLog of tasksLogs; track $index) {
+            <div class="p-2 mb-2 ">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="letter-avatar"
+                        [ngStyle]="{'background-color': colorMap[tasksLog.firstName.charAt(0)] || '#4CAF50'}">
+                        {{ (tasksLog.firstName.charAt(0) + tasksLog.lastName.charAt(0)) | uppercase }}
+                    </div>
+                    <div class="pt-3">
+                        <div class="fw-bold">{{ tasksLog.firstName}} {{tasksLog.lastName}}</div>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div>{{ tasksLog.date}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="">
+                    <div class="display-text-area-data">
+                        {{ tasksLog.log }}
+                    </div>
+                </div>
+
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom">
+        <div>Showing {{ tasksLogs.length }} entries</div>
+        <div class="flex-grow-1 d-flex justify-content-center">
+            <button class="custom-btn" (click)="getLogData()">Refresh Logs</button>
+        </div>
+    </div>
+</div> -->
+
+
+
+<div class="container-fluid m-0 p-0 small">
+    <div class="custom-table-responsive">
+        <table class="table table-bordered-my table-hover">
+            <thead class="sticky-top">
+                <tr class="text-nowrap text-center align-middle custom-table-header-clr">
+                    <th class="mycolour">S.No.</th>
+                    <th class="min-max-width-28 mycolour">Add / Changes Details</th>
+                    <th class="mycolour"> By</th>
+                    <th class="mycolour"> Date Time</th>
+                </tr>
+            </thead>
+            <tbody class="text-wrap">
+
+                @for (tasksLog of tasksLogs; track $index) {
+                <tr class="align-middle text-center">
+
+                    <td>{{ $index + 1}}</td>
+                    <td class="display-text-area-data min-max-width-28">{{ tasksLog.log }}</td>
+                    <td class="align-middle text-center">
+
+                        <div class="d-flex align-items-center gap-1 justify-content-center">
+                            <div class="letter-avatar"
+                                [ngStyle]="{'background-color': colorMap[tasksLog.firstName.charAt(0)] || '#4CAF50'}">
+                                {{ (tasksLog.firstName.charAt(0) + tasksLog.lastName.charAt(0)) | uppercase }}
+                            </div>
+                            <div class="">
+                                <div>{{ tasksLog.firstName}}</div>
+                            </div>
+                        </div>
+
+
+                    </td>
+                    <td class="text-nowrap">{{ tasksLog.date }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="custom-table-footer d-flex justify-content-between align-items-center p-2 rounded-bottom">
+        <div>Showing {{ tasksLogs.length }} entries</div>
+        <div class="flex-grow-1 d-flex justify-content-center">
+            <button class="custom-btn" (click)="getLogData()">Refresh Logs</button>
+        </div>
+    </div>
+</div>
+}
