@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ARAS.Models.User.ResponseModels
+{
+    public class AddDropDownValuesResponseModel
+    {
+        public Guid GuidId { get; set; }
+    }
+}
